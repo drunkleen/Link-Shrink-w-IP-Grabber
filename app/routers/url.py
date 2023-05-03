@@ -11,22 +11,9 @@ router = APIRouter(
 )
 
 
-# @router.get('/', status_code=status.HTTP_200_OK, response_model=List[posts.GetPost])
-# @router.get('/', status_code=status.HTTP_200_OK, response_model=List[posts.PostOut])
-@router.get('/', status_code=status.HTTP_200_OK)
-async def get_all_posts(db: Session = Depends(get_db),
-                        current_user: int = Depends(oauth2.get_current_user),
-                        limit: int = 50, skip: int = 0, search: Optional[str] = ""):
-    url = db.query(models.URL).filter(models.URL.owner_id == current_user.id) \
-        .filter(models.URL.title.contains(search)) \
-        .limit(limit).offset(skip).all()
-
-    return url
-
-
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=urlschema.URLOut)
 async def create_url(n_url: urlschema.URLCreate, db: Session = Depends(get_db),
-                      current_user: int = Depends(oauth2.get_current_user)):
+                     current_user: int = Depends(oauth2.get_current_user)):
     shorted = url_shorter(n_url.url)
     new_url = models.URL(owner_id=current_user.id, shorten_url=shorted, **n_url.dict())
     db.add(new_url)  # add the new post

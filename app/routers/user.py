@@ -41,3 +41,5 @@ async def get_user(user_id: int, datab: Session = Depends(get_db)):
                             detail=f"post with {user_id} doesn't exist.")
 
     return user
+
+

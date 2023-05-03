@@ -12,6 +12,7 @@ router = APIRouter(tags=["Login"])
 async def login(request: Request,
                 user_credentials: OAuth2PasswordRequestForm = Depends(),
                 db: Session = Depends(get_db)):
+
     user = db.query(models.User).filter(
         models.User.mail == user_credentials.username).first()
 
@@ -29,11 +30,11 @@ async def login(request: Request,
     ua_string = str(user_agent)
     user_agent_obj = parse(ua_string)
 
-    # logging.info
-    new_ip = models.IPLog(user_mail=user_credentials.username,
-                          user_browser=user_agent_obj.browser.family,
-                          user_os=user_agent_obj.os.family,
-                          user_device=user_agent_obj.device.family)
+    new_ip = models.LoginLog(user_mail=user_credentials.username,
+                             user_browser=user_agent_obj.browser.family,
+                             user_os=user_agent_obj.os.family,
+                             user_device=user_agent_obj.device.family,
+                             user_ip=request.client.host)
 
     db.add(new_ip)
     db.commit()

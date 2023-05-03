@@ -13,17 +13,6 @@ class User(Base):
     created_time = Column(DateTime(timezone=True), nullable=False, default=func.now())
 
 
-class IPLog(Base):
-    __tablename__ = 'ip_log'
-
-    id = Column(Integer, primary_key=True, nullable=False)
-    user_mail = Column(String, index=True, nullable=False)
-    user_browser = Column(String, index=True, nullable=False)
-    user_os = Column(String, index=True, nullable=False)
-    user_device = Column(String, index=True, nullable=False)
-    created_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
-
-
 class URL(Base):
     __tablename__ = 'generated_urls'
 
@@ -32,18 +21,32 @@ class URL(Base):
     url = Column(String, index=True, nullable=False)
     shorten_url = Column(String, index=True, nullable=False)
     created_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
+
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     owner = relationship("User")
 
 
-class URLLog(Base):
-    __tablename__ = 'url_Log'
+class LoginLog(Base):
+    __tablename__ = 'login_log'
 
     id = Column(Integer, primary_key=True, nullable=False)
     user_mail = Column(String, index=True, nullable=False)
     user_browser = Column(String, index=True, nullable=False)
     user_os = Column(String, index=True, nullable=False)
     user_device = Column(String, index=True, nullable=False)
+    user_ip = Column(String, index=True, nullable=False)
     created_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
-    # owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    # owner = relationship("User")
+
+
+class URLLog(Base):
+    __tablename__ = 'url_log'
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    client_browser = Column(String, index=True, nullable=False)
+    client_os = Column(String, index=True, nullable=False)
+    client_device = Column(String, index=True, nullable=False)
+    client_ip = Column(String, index=True, nullable=False)
+
+    click_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
+    user_accessibility = Column(Integer, nullable=False)
+
