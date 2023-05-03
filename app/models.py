@@ -35,7 +35,7 @@ class LoginLog(Base):
     user_os = Column(String, index=True, nullable=False)
     user_device = Column(String, index=True, nullable=False)
     user_ip = Column(String, index=True, nullable=False)
-    created_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
+    loging_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
 
 
 class URLLog(Base):
@@ -46,7 +46,7 @@ class URLLog(Base):
     client_os = Column(String, index=True, nullable=False)
     client_device = Column(String, index=True, nullable=False)
     client_ip = Column(String, index=True, nullable=False)
-
     click_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
-    user_accessibility = Column(Integer, nullable=False)
 
+    url_id = Column(Integer, ForeignKey("generated_urls.id", ondelete="CASCADE"), nullable=False)
+    owner = relationship("URL")

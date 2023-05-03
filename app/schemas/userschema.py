@@ -51,13 +51,14 @@ class TokenData(BaseModel):
         orm_mode = True
 
 
-# IP Logging //
-class IP(BaseModel):
+# short URL Logging //
+class ClientOfLinks(BaseModel):
     user_mail: EmailStr
-    user_browser: str
-    user_os: str
-    user_device: str
-    created_time: datetime
+    client_browser: str
+    client_os: str
+    client_device: str
+    client_ip: str
+    click_time: datetime
 
     class Config:
         orm_mode = True

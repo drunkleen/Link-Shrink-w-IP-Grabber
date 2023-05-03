@@ -43,3 +43,13 @@ async def get_user(user_id: int, datab: Session = Depends(get_db)):
     return user
 
 
+# @router.get('/control/{generated_link_id}', status_code=status.HTTP_200_OK, response_model=userschema.ClientOfLinks)
+@router.get('/control/{generated_link_id}', status_code=status.HTTP_200_OK)
+async def get_user(generated_link_id: int, db: Session = Depends(get_db)):
+
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status.HTTP_404_NOT_FOUND,
+                            detail=f"generated link with id {generated_link_id} doesn't exist.")
+
+    return user
