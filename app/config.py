@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_minutes: int
-    allow_origin = []
+
     class Config:
         env_file = ".env"
 

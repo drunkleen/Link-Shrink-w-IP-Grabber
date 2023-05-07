@@ -36,7 +36,7 @@ async def create_URL(n_url: urlschema.URLCreate, db: Session = Depends(get_db),
             detail="You are not logged in"
         )
 
-    shorted = url_shorter(n_url.url)
+    shorted = url_shorter(current_user.id, n_url.url)
     new_url = models.URL(owner_id=current_user.id, shorten_url=shorted, **n_url.dict())
     db.add(new_url)  # add the new post
     db.commit()  # push the new changes into database

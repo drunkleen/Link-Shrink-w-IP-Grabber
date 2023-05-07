@@ -42,8 +42,19 @@ async def login(request: Request,
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post('/SignUp', status_code=status.HTTP_201_CREATED, response_model=userschema.GetUser)
+@router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=userschema.GetUser)
 async def create_user(user: userschema.UserCreate, db: Session = Depends(get_db)):
+
+    query = db.query(
+        models.User.mail
+    ).filter(
+        models.User.mail == user.mail
+    ).first()
+
+    if query:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="User already exists")
+
     # hashing password:
     user.password = utility.hash_password(user.password)
     # create the user
