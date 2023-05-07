@@ -13,8 +13,7 @@ router = APIRouter(
 
 @router.get('/', status_code=status.HTTP_200_OK, response_model=List[urlschema.URLOut])
 async def get_all_generated_URLs(db: Session = Depends(get_db),
-                        current_user: int = Depends(oauth2.get_current_user)):
-
+                                 current_user: int = Depends(oauth2.get_current_user)):
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -31,7 +30,6 @@ async def get_all_generated_URLs(db: Session = Depends(get_db),
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=urlschema.URLOut)
 async def create_URL(n_url: urlschema.URLCreate, db: Session = Depends(get_db),
                      current_user: int = Depends(oauth2.get_current_user)):
-
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -49,8 +47,7 @@ async def create_URL(n_url: urlschema.URLCreate, db: Session = Depends(get_db),
 
 @router.delete('/{url_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_URL(url_id: int, db: Session = Depends(get_db),
-                      current_user: id = Depends(oauth2.get_current_user)):
-
+                     current_user: id = Depends(oauth2.get_current_user)):
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -12,7 +12,6 @@ router = APIRouter(tags=["Login"])
 async def login(request: Request,
                 user_credentials: OAuth2PasswordRequestForm = Depends(),
                 db: Session = Depends(get_db)):
-
     user = db.query(models.User).filter(
         models.User.mail == user_credentials.username).first()
 
@@ -41,7 +40,6 @@ async def login(request: Request,
     db.refresh(new_ip)
 
     return {"access_token": access_token, "token_type": "bearer"}
-
 
 
 @router.post('/SignUp', status_code=status.HTTP_201_CREATED, response_model=userschema.GetUser)
