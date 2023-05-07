@@ -14,7 +14,7 @@ class User(Base):
 
 
 class URL(Base):
-    __tablename__ = 'generated_urls'
+    __tablename__ = 'GeneratedURL'
 
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String, index=True, nullable=False)
@@ -27,7 +27,7 @@ class URL(Base):
 
 
 class LoginLog(Base):
-    __tablename__ = 'login_log'
+    __tablename__ = 'LoginLog'
 
     id = Column(Integer, primary_key=True, nullable=False)
     user_mail = Column(String, index=True, nullable=False)
@@ -39,7 +39,7 @@ class LoginLog(Base):
 
 
 class URLLog(Base):
-    __tablename__ = 'url_log'
+    __tablename__ = 'URLLog'
 
     id = Column(Integer, primary_key=True, nullable=False)
     client_browser = Column(String, index=True, nullable=False)
@@ -48,5 +48,4 @@ class URLLog(Base):
     client_ip = Column(String, index=True, nullable=False)
     click_time = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('NOW()'))
 
-    url_id = Column(Integer, ForeignKey("generated_urls.id", ondelete="CASCADE"), nullable=False)
-    owner = relationship("URL")
+    url_id = Column(Integer, ForeignKey("GeneratedURL.id", ondelete="CASCADE"), nullable=False)

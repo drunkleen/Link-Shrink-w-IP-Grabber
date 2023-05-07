@@ -1,4 +1,3 @@
-# from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 from app.schemas import userschema
@@ -28,6 +27,17 @@ class URLOut(GetURL):
 
 class URLCreate(URLBase):
     pass
+
+    class Config:
+        orm_mode = True
+
+
+class URLLogOUT(BaseModel):
+    client_ip: str
+    client_browser: str
+    client_os: str
+    client_device: str
+    click_time: datetime
 
     class Config:
         orm_mode = True

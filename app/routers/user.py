@@ -1,9 +1,9 @@
-from fastapi import status, HTTPException, Depends, APIRouter
 from typing import List
-from app import models
-from app.database import Session, get_db
 from app.utility import hash_password
-from app.schemas import userschema
+from fastapi import status, Depends, APIRouter, HTTPException
+from app import models, oauth2
+from app.database import Session, get_db
+from app.schemas import userschema, urlschema
 
 router = APIRouter(
     prefix="/users",
@@ -11,17 +11,9 @@ router = APIRouter(
 )
 
 
-@router.get('/', status_code=status.HTTP_200_OK, response_model=List[userschema.GetUser])
-async def get_all_users(db: Session = Depends(get_db)):
-    user = db.query(models.User).all()
-
-    return user
-
-
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=userschema.GetUser)
 async def create_user(user: userschema.UserCreate, db: Session = Depends(get_db)):
     # hashing password:
-    print(f"\n\n\n\n{db}\n\n\n\n")
     user.password = hash_password(user.password)
     # create the user
     new_user = models.User(**user.dict())
@@ -33,23 +25,25 @@ async def create_user(user: userschema.UserCreate, db: Session = Depends(get_db)
     return new_user
 
 
-@router.get('/{user_id}', status_code=status.HTTP_200_OK, response_model=userschema.GetUser)
-async def get_user(user_id: int, datab: Session = Depends(get_db)):
-    user = datab.query(models.User).filter(models.User.id == user_id).first()
-    if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND,
-                            detail=f"post with {user_id} doesn't exist.")
+@router.get('/control/',
+            status_code=status.HTTP_200_OK,
+            response_model=List[urlschema.URLLogOUT])
+async def get_user(db: Session = Depends(get_db),
+                   current_user: int = Depends(oauth2.get_current_user)):
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You are not logged in"
+        )
 
-    return user
+    response = db.query(
+        models.URLLog
+    ).join(
+        models.URL,
+        models.URL.id == models.URLLog.url_id,
+        isouter=True
+    ).filter(
+        models.URL.owner_id == current_user.id
+    ).all()
 
-
-# @router.get('/control/{generated_link_id}', status_code=status.HTTP_200_OK, response_model=userschema.ClientOfLinks)
-@router.get('/control/{generated_link_id}', status_code=status.HTTP_200_OK)
-async def get_user(generated_link_id: int, db: Session = Depends(get_db)):
-
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if not user:
-        raise HTTPException(status.HTTP_404_NOT_FOUND,
-                            detail=f"generated link with id {generated_link_id} doesn't exist.")
-
-    return user
+    return response

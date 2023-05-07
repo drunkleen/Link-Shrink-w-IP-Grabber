@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from app import models
 from app.database import engine
 from app.routers import auth, user, url,redirect
-from user_agents import parse
+
 
 models.Base.metadata.create_all(bind=engine)
 
