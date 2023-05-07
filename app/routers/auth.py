@@ -41,3 +41,18 @@ async def login(request: Request,
     db.refresh(new_ip)
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+
+@router.post('/SignUp', status_code=status.HTTP_201_CREATED, response_model=userschema.GetUser)
+async def create_user(user: userschema.UserCreate, db: Session = Depends(get_db)):
+    # hashing password:
+    user.password = utility.hash_password(user.password)
+    # create the user
+    new_user = models.User(**user.dict())
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user

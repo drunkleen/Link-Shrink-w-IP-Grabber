@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get('/', status_code=status.HTTP_200_OK, response_model=List[urlschema.URLOut])
-async def get_all_users(db: Session = Depends(get_db),
+async def get_all_generated_URLs(db: Session = Depends(get_db),
                         current_user: int = Depends(oauth2.get_current_user)):
 
     if not current_user:
@@ -29,7 +29,7 @@ async def get_all_users(db: Session = Depends(get_db),
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=urlschema.URLOut)
-async def create_url(n_url: urlschema.URLCreate, db: Session = Depends(get_db),
+async def create_URL(n_url: urlschema.URLCreate, db: Session = Depends(get_db),
                      current_user: int = Depends(oauth2.get_current_user)):
 
     if not current_user:
@@ -47,26 +47,8 @@ async def create_url(n_url: urlschema.URLCreate, db: Session = Depends(get_db),
     return new_url
 
 
-@router.get('/{url_id}', response_model=urlschema.GetURL)
-async def get_post(url_id: int, db: Session = Depends(get_db),
-                   current_user: int = Depends(oauth2.get_current_user)):
-
-    if not current_user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not logged in"
-        )
-
-    url = db.query(models.URL).filter(models.URL.id == url_id).first()
-    if not url:
-        raise HTTPException(status.HTTP_404_NOT_FOUND,
-                            detail=f"url with {url_id} doesn't exist.")
-
-    return url
-
-
 @router.delete('/{url_id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_post(url_id: int, db: Session = Depends(get_db),
+async def delete_URL(url_id: int, db: Session = Depends(get_db),
                       current_user: id = Depends(oauth2.get_current_user)):
 
     if not current_user:
